@@ -16,19 +16,23 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import Programa.Estoque;
+import Programa.Pedido;
+import Programa.Produto;
+import Programa.ProdutoQuantidade;
 import Programa.Roteiro;
 
 public class PainelEstoqueXRoteiro extends PainelBase{
   
   private JPanel insidePanel;
-  private JButton bEscolherRoteiro, bRetornar;
+  private JButton bEscolherRoteiro, bRetornar, bSubtrairEstoque;
   private JTextField tfRoteiro;
   private JTable tTabela;
   private JScrollPane scrollPane;
   private Estoque estoqueLocal = null;
-  private List<Roteiro> listaRoteiros = null;
+  private Roteiro roteiroSelecionado = null;
+  private ArrayList<ProdutoQuantidade> listaProdutosNoRoteiro;
 
-  private Object[] colunas = new Object[] {"Id", "Produto", "Quantidade em Estoque", "Quantidade nos Pedidos", "Quantidade Faltando"};
+  private Object[] colunas = new Object[] {"Id", "Produto", "Em Estoque", "Nos Pedidos", "Faltando"};
   private Object[][] dados = null;
   private DefaultTableModel tableModel = new DefaultTableModel(dados, colunas);
   private TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(tableModel);
@@ -38,6 +42,7 @@ public class PainelEstoqueXRoteiro extends PainelBase{
 
     this.add(insidePanel);
     this.add(bRetornar);
+    this.add(bSubtrairEstoque);
     
     insidePanel.add(tfRoteiro);
     insidePanel.add(bEscolherRoteiro);
@@ -46,11 +51,14 @@ public class PainelEstoqueXRoteiro extends PainelBase{
     this.getFocusList().add(tfRoteiro);
     this.getFocusList().add(bEscolherRoteiro);
     this.getFocusList().add(bRetornar);
+    this.getFocusList().add(bSubtrairEstoque);
   }
 
   private void init(){
     this.setBackground(new Color(188, 216, 216));
     this.setLayout(null);
+
+    listaProdutosNoRoteiro = new ArrayList<>();
 
     insidePanel = new JPanel();
     insidePanel.setBackground(new Color(230, 247, 247));
@@ -58,7 +66,7 @@ public class PainelEstoqueXRoteiro extends PainelBase{
     insidePanel.setBounds(10, 10, 880, 450);
     insidePanel.setBorder(BorderFactory.createLineBorder(Color.black, 3));
 
-    Font font = new Font("Verdana", Font.PLAIN, 25);
+    Font font = new Font("Verdana", Font.PLAIN, 20);
 
     bEscolherRoteiro = new JButton("Escolher Roteiro");
     bEscolherRoteiro.setFocusable(false);
@@ -69,7 +77,12 @@ public class PainelEstoqueXRoteiro extends PainelBase{
     bRetornar.setIcon(new ImageIcon("Programa/res/iconRetorno.png"));
     bRetornar.setFocusable(false);
     bRetornar.setFont(font);
-    bRetornar.setBounds(300, 470, 300, 60);
+    bRetornar.setBounds(125, 470, 300, 60);
+
+    bSubtrairEstoque = new JButton("Subtrair Estoque");
+    bSubtrairEstoque.setFocusable(false);
+    bSubtrairEstoque.setFont(font);
+    bSubtrairEstoque.setBounds(450, 470, 300, 60);
 
     tfRoteiro = new JTextField();
     tfRoteiro.setEditable(false);
@@ -78,6 +91,7 @@ public class PainelEstoqueXRoteiro extends PainelBase{
 
     tTabela = new JTable(tableModel);
     tTabela.setRowSorter(rowSorter);
+    tTabela.setEnabled(false);
 
     scrollPane = new JScrollPane();
     scrollPane.getViewport().add(tTabela);
@@ -105,17 +119,68 @@ public class PainelEstoqueXRoteiro extends PainelBase{
     }
   }
 
-  public void atualizarDados(Estoque estoque, List<Roteiro> listaRoteiros){
+  public void atualizarDados(Estoque estoque){
     this.estoqueLocal = estoque;
-    this.listaRoteiros = listaRoteiros;
 
     tableModel.setDataVector(dados, colunas);
     tTabela.setRowSorter(rowSorter);
   }
 
-  public void atualizarDados(Estoque estoque, Roteiro roteiro){
-    //TODO
+  public void atualizarSelecionado(){
+    tfRoteiro.setText(roteiroSelecionado.getRegião() + " " + roteiroSelecionado.getDataInicio().getFullData() + " " + roteiroSelecionado.getDataTermino().getFullData());
+    while (tableModel.getRowCount() > 0)
+      tableModel.removeRow(0);
+    listaProdutosNoRoteiro.clear();
+    dados = null;
+    atualizarTabela();
   }
+
+  private void atualizarTabela(){
+    for (Pedido p: roteiroSelecionado.getPedidos()){
+      for (ProdutoQuantidade pq: p.getProdutos()){
+        if (listaProdutosNoRoteiro.isEmpty()){
+          listaProdutosNoRoteiro.add(pq);
+        }
+        else {
+          for (int i=0; i<listaProdutosNoRoteiro.size(); i++){
+            if (pq.equals(listaProdutosNoRoteiro.get(i))){
+              listaProdutosNoRoteiro.get(i).setQuantidade(pq.getQuantidade() + listaProdutosNoRoteiro.get(i).getQuantidade());
+              break;
+            }
+          }
+          listaProdutosNoRoteiro.add(pq);
+        }
+      }
+    }
+
+    dados = new Object[listaProdutosNoRoteiro.size()][5];
+    for (int i=0; i<listaProdutosNoRoteiro.size(); i++){
+      dados[i][0] = listaProdutosNoRoteiro.get(i).getProduto().getCodigo();
+      dados[i][1] = listaProdutosNoRoteiro.get(i).getProduto().getNome();
+      dados[i][2] = verificarEstoqueItem(listaProdutosNoRoteiro.get(i).getProduto());
+      dados[i][3] = listaProdutosNoRoteiro.get(i).getQuantidade();
+      dados[i][4] = calcularFalta((int) dados[i][2], (int) dados[i][3]);
+    }
+
+    tableModel.setDataVector(dados, colunas);
+    tTabela.setRowSorter(rowSorter);
+  }
+
+  private int verificarEstoqueItem(Produto produto){
+    for (int i=0; i<estoqueLocal.getProdutos().size(); i++){
+      if (produto.getCodigo() == estoqueLocal.getProdutos().get(i).getProduto().getCodigo())
+        return estoqueLocal.getProdutos().get(i).getQuantidade();
+    }
+    return 0;
+  }
+
+  private int calcularFalta(int estoque, int roteiro){
+    if (estoque - roteiro < 0)
+      return -(estoque - roteiro);
+    else 
+      return 0;
+  }
+
 
   //getters e setters
   public JButton getbEscolherRoteiro() {
@@ -164,5 +229,21 @@ public class PainelEstoqueXRoteiro extends PainelBase{
 
   public void setRowSorter(TableRowSorter<DefaultTableModel> rowSorter) {
     this.rowSorter = rowSorter;
+  }
+
+  public void setRoteiroSelecionado(Roteiro roteiro){
+    this.roteiroSelecionado = roteiro;
+  }
+
+  public Roteiro getRoteiroSelecionado(){
+    return this.getRoteiroSelecionado();
+  }
+
+  public JButton getbSubtrairEstoque() {
+    return bSubtrairEstoque;
+  }
+
+  public void setbSubtrairEstoque(JButton bSubtrairEstoque) {
+    this.bSubtrairEstoque = bSubtrairEstoque;
   }
 }

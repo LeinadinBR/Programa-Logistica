@@ -51,7 +51,7 @@ public class PainelEscolherRoteiro extends PainelBase {
     tTabela = new JTable(tableModel){
       @Override
       public boolean isCellEditable(int row, int column){
-        return autoCreateColumnsFromModel;
+        return column != 0 && column != 1 && column != 2; 
       }
     };
     tTabela.setRowSorter(rowSorter);

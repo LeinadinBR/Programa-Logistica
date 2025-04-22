@@ -1564,13 +1564,10 @@ public class MainFrame extends JFrame implements WindowStateListener{
           Object dataI = (painelEscolherRoteiro.gettTabela().getModel().getValueAt(painelEscolherRoteiro.gettTabela().getSelectedRow(), 1));
           Object dataF = (painelEscolherRoteiro.gettTabela().getModel().getValueAt(painelEscolherRoteiro.gettTabela().getSelectedRow(), 2));
         
-          painelEscolherRoteiro.setRoteiroLocal(validarRoteiro(regiao,dataI, dataF));
+          painelEstoqueXRoteiro.setRoteiroSelecionado(validarRoteiro(regiao, dataI, dataF));
+          painelEstoqueXRoteiro.atualizarSelecionado();
 
-          if (painelEscolherRoteiro.getRoteiroLocal() == null)
-            return;
-          else {
-            painelEstoqueXRoteiro.atualizarDados(controle.getEstoque(), painelEscolherRoteiro.getRoteiroLocal());
-          }
+          frameSecundario.dispose();
         } 
         catch (Exception ex) {
           return;
@@ -1732,7 +1729,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
   }
 
   private void atualizarTabelasEstoqueXRoteiro(){
-    painelEstoqueXRoteiro.atualizarDados(controle.getEstoque(), controle.getListaRoteiros());
+    painelEstoqueXRoteiro.atualizarDados(controle.getEstoque());
   }
 
   private void atualizarNumPermanentes(){
