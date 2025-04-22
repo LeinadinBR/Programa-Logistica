@@ -1040,12 +1040,12 @@ public class MainFrame extends JFrame implements WindowStateListener{
             
             Pedido p = validarPedido(numPedido, roteiro);
             JFrame frameSecundario = new JFrame(("Pedido " + numPedido));
-            frameSecundario.setLocationRelativeTo(MainFrame.self); //TODO consertar localização
             frameSecundario.setSize(400, 600);
             frameSecundario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frameSecundario.setIconImage(imageIcon.getImage());
             frameSecundario.setResizable(false);
             frameSecundario.getContentPane().add(painelListaDoPedido);
+            frameSecundario.setLocationRelativeTo(MainFrame.self);
             frameSecundario.setVisible(true);
             
             painelListaDoPedido.atualizarDados(p);
@@ -1132,7 +1132,23 @@ public class MainFrame extends JFrame implements WindowStateListener{
             String dataInicio = (String) painelRoteiro.gettTabela().getModel().getValueAt(lin, 1);
             String dataFinal = (String) painelRoteiro.gettTabela().getModel().getValueAt(lin, 2);
             Roteiro r = validarRoteiro(roteiro, dataInicio, dataFinal);
-            //TODO Abrir outra tela com todos os pedidos do roteiro
+            
+            JFrame frameSecundario = new JFrame(("Roteiro " + r.getRegião() + " " + r.getDataInicio().getFullData() + " a " + r.getDataTermino().getFullData()));
+            frameSecundario.setSize(900, 600);
+            frameSecundario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frameSecundario.setIconImage(imageIcon.getImage());
+            frameSecundario.setResizable(false);
+            frameSecundario.getContentPane().add(painelRoteiroParaIndividual);
+            frameSecundario.setLocationRelativeTo(MainFrame.self);
+            frameSecundario.setVisible(true);
+            
+            painelRoteiroParaIndividual.atualizarDados(r.getPedidos());
+            painelRoteiroParaIndividual.getbFechar().addActionListener(e1 -> {
+              frameSecundario.dispose();
+            });
+
+            //TODO fazer com que possa abrir o pedido em um terceiro frame
+
           }
           catch (IndexOutOfBoundsException ex){}
           catch(ClassCastException ex){}
@@ -1157,6 +1173,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
       }
       
     });
+   
     //----------------------------------------------------------------
 
 
