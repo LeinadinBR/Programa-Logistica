@@ -48,7 +48,12 @@ public class PainelEscolherRoteiro extends PainelBase {
 
     regularFont = new Font("Verdana", Font.PLAIN, 25);
 
-    tTabela = new JTable(tableModel);
+    tTabela = new JTable(tableModel){
+      @Override
+      public boolean isCellEditable(int row, int column){
+        return autoCreateColumnsFromModel;
+      }
+    };
     tTabela.setRowSorter(rowSorter);
 
     scrollPane = new JScrollPane();

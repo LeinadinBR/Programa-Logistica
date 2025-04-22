@@ -2,6 +2,8 @@ package Programa.Paineis;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class PainelRoteiroParaIndividual extends PainelBase {
   private DefaultTableModel tableModel = new DefaultTableModel(dados, colunas);
   private TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(tableModel); 
 
+  private Color corFiller = new Color(200, 160, 160);
+
   public PainelRoteiroParaIndividual(){
     init();
 
@@ -50,6 +54,7 @@ public class PainelRoteiroParaIndividual extends PainelBase {
     this.setBackground(new Color(188, 216, 216));
 
     insidePanel = new JPanel();
+    insidePanel.setLayout(null);
     insidePanel.setBackground(new Color(230, 247, 247));
     insidePanel.setBounds(10, 10, 880, 450);
     insidePanel.setBorder(BorderFactory.createLineBorder(Color.black, 3));
@@ -63,23 +68,45 @@ public class PainelRoteiroParaIndividual extends PainelBase {
 
     tfPesquisa = new JTextField("Pesquisa");
     tfPesquisa.setFont(font);
-    tfPesquisa.setBounds(10, 10, 200, 40);
+    tfPesquisa.setBounds(10, 20, 220, 40);
+    tfPesquisa.setForeground(corFiller);
+    fillerText("Pesquisa", tfPesquisa);
 
     String[] listaComboBox = new String[] {"Número do Pedido", "Roteiro", "Data", "Cliente", "Valor"};
 
     cbPesquisa = new JComboBox<>(listaComboBox);
-    cbPesquisa.setBounds(10, 60, 200, 40);
+    cbPesquisa.setBounds(10, 75, 200, 40);
 
     tTabela = new JTable(tableModel);
     tTabela.setRowSorter(rowSorter);
     tTabela.setDefaultEditor(Object.class, null);
 
     scrollPane = new JScrollPane();
-    scrollPane.setBounds(250, 15, 600, 370);
+    scrollPane.setBounds(250, 15, 600, 410);
     scrollPane.getViewport().add(tTabela);
     scrollPane.setBorder(BorderFactory.createLineBorder(Color.black, 3));
 
     this.setFocusList(new ArrayList<>());
+  }
+
+  private void fillerText(String texto, JTextField tf){
+    tf.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        if (tf.getForeground().equals(corFiller)){
+          tf.setText("");
+          tf.setForeground(Color.black);
+        }
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        if (tf.getText().equals("") || tf.getText() == null){
+          tf.setForeground(corFiller);
+          tf.setText(texto);
+        }
+      }
+    });
   }
 
   public void atualizarDados(List<Pedido> listaPedidos){
@@ -128,4 +155,14 @@ public class PainelRoteiroParaIndividual extends PainelBase {
   public void setRowSorter(TableRowSorter<DefaultTableModel> rowSorter) {
     this.rowSorter = rowSorter;
   }
+
+  public JTable gettTabela() {
+    return tTabela;
+  }
+
+  public void settTabela(JTable tTabela) {
+    this.tTabela = tTabela;
+  }
+
+  
 }

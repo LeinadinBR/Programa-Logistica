@@ -1147,7 +1147,53 @@ public class MainFrame extends JFrame implements WindowStateListener{
               frameSecundario.dispose();
             });
 
-            //TODO fazer com que possa abrir o pedido em um terceiro frame
+            painelRoteiroParaIndividual.gettTabela().addMouseListener(new MouseListener() {
+
+              @Override
+              public void mouseClicked(MouseEvent e2) {
+                if (e2.getClickCount() >= 2){
+                  try{
+                    int lin1 = painelRoteiroParaIndividual.gettTabela().rowAtPoint(e2.getPoint());
+                    int numPedido = (Integer) painelRoteiroParaIndividual.gettTabela().getModel().getValueAt(lin1, 0);
+                    String roteiro1 = (String) painelRoteiroParaIndividual.gettTabela().getModel().getValueAt(lin1, 1);
+                    Pedido p = validarPedido(numPedido, roteiro1);
+
+                    JFrame frameTerciario = new JFrame(("Pedido " + numPedido));
+                    frameTerciario.setSize(400, 600);
+                    frameTerciario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frameTerciario.setIconImage(imageIcon.getImage());
+                    frameTerciario.setResizable(false);
+                    frameTerciario.getContentPane().add(painelListaDoPedido);
+                    frameTerciario.setLocationRelativeTo(MainFrame.self);
+                    frameTerciario.setVisible(true);
+
+                    painelListaDoPedido.atualizarDados(p);
+                    painelListaDoPedido.getbSair().addActionListener(e3 -> {
+                      frameTerciario.dispose();
+                    });
+                  }
+                  catch (IndexOutOfBoundsException ex){}
+                  catch(ClassCastException ex){}
+                }
+              }
+
+              @Override
+              public void mousePressed(MouseEvent e1) {
+              }
+
+              @Override
+              public void mouseReleased(MouseEvent e1) {
+              }
+
+              @Override
+              public void mouseEntered(MouseEvent e1) {
+              }
+
+              @Override
+              public void mouseExited(MouseEvent e1) {
+              }
+            });
+
 
           }
           catch (IndexOutOfBoundsException ex){}
@@ -1242,7 +1288,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           painelCriarPedido.getTfCliente().setText(painelCriarPedido.getClienteSelecionado().getNome());
           frameSecundario.dispose();
         }
-        catch(IndexOutOfBoundsException ex){
+        catch(Exception ex){
 
         }        
       });
@@ -1273,12 +1319,9 @@ public class MainFrame extends JFrame implements WindowStateListener{
         painelCriarPedido.getTfRoteiro().setText(painelCriarPedido.getRoteiroSelecionado().getRegião());
         frameSecundario.dispose();
         }
-        catch(IndexOutOfBoundsException ex){
+        catch(Exception ex){
           //TODO fazer a excecao
         }        
-        catch(NullPointerException ex){
-          //TODO fazer a excecao
-        }
       });
     
       //TODO tf de busca

@@ -61,7 +61,11 @@ public class PainelSelecionarRoteiro extends PainelBase {
     bSelecionar.setBounds(60, 85, 220, 40);
     bSelecionar.setFocusable(false);
 
-    tTabela = new JTable(tableModel);
+    tTabela = new JTable(tableModel){
+      @Override
+      public boolean isCellEditable(int row, int column){
+        return column != 0 && column != 1 && column != 2; 
+    }};
     tTabela.setBounds(330, 30, 460, 450);
 
     scrollPane = new JScrollPane();
