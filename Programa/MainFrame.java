@@ -352,7 +352,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
       }
       
       controle.adicionarProduto(p);
-      controle.adicionarProdutoNoEstoque(new ProdutoQuantidade(p, 0)); //TODO verificar isso
+      controle.adicionarProdutoNoEstoque(new ProdutoQuantidade(p, 0)); 
       atualizarTabelasProduto();
       cp.getTfNome().setText("Nome");
       cp.getTfNome().setForeground(cp.getCorFiller());
@@ -438,7 +438,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           else flag = true;
         }
         catch (NumberFormatException ex){
-          //TODO optionpane
+          JOptionPane.showMessageDialog(this, "Formato inválido", "Erro", JOptionPane.ERROR_MESSAGE); 
         }
 
         if (flag){}
@@ -494,7 +494,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
               else flag = true;
             }
             catch (NumberFormatException ex){
-              //TODO optionpane
+              JOptionPane.showMessageDialog(MainFrame.self, "Formato incorretp", "Erro", JOptionPane.ERROR_MESSAGE);
             }
 
             if (flag){}
@@ -635,7 +635,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           else flag = true;
         }
         catch (NumberFormatException ex){
-          //TODO optionpane
+          JOptionPane.showMessageDialog(this, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
         if (flag){}
@@ -691,7 +691,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
               else flag = true;
             }
             catch (NumberFormatException ex){
-              //TODO optionpane
+              JOptionPane.showMessageDialog(MainFrame.self, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
             }
 
             if (flag){}
@@ -824,7 +824,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelVerProdutos.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelVerProdutos.getCbComboBox().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-            //TODO ver que erro coloca aqui
           }
         }
       }
@@ -887,7 +886,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelVerClientes.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelVerClientes.getCbComboBox().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-            //TODO ver que erro coloca aqui
           }
         }
       }
@@ -923,7 +921,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelVerFornecedores.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelVerFornecedores.getCbComboBox().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-            //TODO ver que erro coloca aqui
           }
         }
       }
@@ -959,7 +956,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelEstoque.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelEstoque.getCbClassificacao().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-             //TODO ver que erro coloca aqui
           }
         }
       }
@@ -995,7 +991,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
   
 
     //Pedidos Individ. (01)-------------------------------------------
-    //TODO fazer os detalhes dos pedidos
     painelPedidosIndividuais.getTfPesquisa().getDocument().addDocumentListener(new DocumentListener(){
 
       @Override
@@ -1022,7 +1017,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelPedidosIndividuais.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelPedidosIndividuais.getCbPesquisa().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-            //TODO ver que erro coloca aqui
           }
         }
       }
@@ -1053,15 +1047,12 @@ public class MainFrame extends JFrame implements WindowStateListener{
               frameSecundario.dispose();
             });
 
-            //TODO fazer com que a edição da célula fique salva nos outros cantos
-            //TODO fazer com que pedidos afetem o estoque
-
           }
           catch (IndexOutOfBoundsException ex){
-            //TODO fazer optionpane
-          }
+            JOptionPane.showMessageDialog(MainFrame.self, "Erro", "Erro", JOptionPane.ERROR_MESSAGE); 
+          }          
           catch (ClassCastException ex){
-            //TODO fazer optionpane          
+            JOptionPane.showMessageDialog(MainFrame.self, "Erro", "Erro", JOptionPane.ERROR_MESSAGE); 
           }
         }
       }
@@ -1087,7 +1078,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
 
 
     //Roteiro (para pedidos) (02)-------------------------------------
-    //TODO fazer os detalhes de pedidos
     painelRoteiro.getTfPesquisa().getDocument().addDocumentListener(new DocumentListener(){
       
       @Override
@@ -1114,7 +1104,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
             painelRoteiro.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, painelRoteiro.getCbPesquisa().getSelectedIndex()));
           }
           catch(PatternSyntaxException ex){
-            //TODO ver que erro coloca aqui
           }
         }
       }
@@ -1293,7 +1282,37 @@ public class MainFrame extends JFrame implements WindowStateListener{
         }        
       });
       
-      //TODO tf de busca
+      painelSelecionarCliente.getTfBusca().getDocument().addDocumentListener(new DocumentListener() {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        private void onChange(){
+          String s = painelSelecionarCliente.getTfBusca().getText();
+          if (s.length() == 0)
+            painelSelecionarCliente.getRowSorter().setRowFilter(null);
+          else {
+            try {
+              painelSelecionarCliente.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s));
+            }
+            catch(PatternSyntaxException ex){
+            }
+        }
+        }
+        
+      });
       //----------------------------------------------------------------
     });
 
@@ -1320,11 +1339,38 @@ public class MainFrame extends JFrame implements WindowStateListener{
         frameSecundario.dispose();
         }
         catch(Exception ex){
-          //TODO fazer a excecao
         }        
       });
     
-      //TODO tf de busca
+      painelSelecionarRoteiro.getTfBusca().getDocument().addDocumentListener(new DocumentListener(){
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+          onChange();
+        }
+
+        private void onChange(){
+          String s = painelSelecionarRoteiro.getTfBusca().getText();
+          if (s.length() == 0)
+          painelSelecionarRoteiro.getRowSorter().setRowFilter(null);
+          else {
+            try {
+              painelSelecionarRoteiro.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s));
+            }
+            catch(PatternSyntaxException ex){
+            }
+          }
+        }
+      });
       //----------------------------------------------------------------
     });
    
@@ -1397,6 +1443,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           onChage();
         }
 
+        @SuppressWarnings("unused")
         public void onChage(){
           boolean ehNum = true;
           String s = painelAdicionarProduto.getTfProduto().getText();
@@ -1417,7 +1464,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
                 painelAdicionarProduto.getRowSorter().setRowFilter(RowFilter.regexFilter("^(?i)" + s, 1));
             }   
             catch(PatternSyntaxException ex){
-              //TODO ver que erro coloca aqui
             }
           }
         }
@@ -1576,8 +1622,20 @@ public class MainFrame extends JFrame implements WindowStateListener{
       //--------------------------------------------------------------
     });
 
-    painelEstoqueXRoteiro.gettTabela().getModel().addTableModelListener(null);
-    //TODO respostas da tabela? (verificar)
+    painelEstoqueXRoteiro.getbSubtrairEstoque().addActionListener(e -> {
+      for(ProdutoQuantidade pq: painelEstoqueXRoteiro.getListaProdutosNoRoteiro()){
+        for(int i=0; i<controle.getListaProdutoQuantidade().size(); i++){
+          if (pq.getProduto().getCodigo() == controle.getListaProdutoQuantidade().get(i).getProduto().getCodigo()){
+            int resultado = controle.getListaProdutoQuantidade().get(i).getQuantidade() - pq.getQuantidade();
+            if (resultado >= 0)
+              controle.getListaProdutoQuantidade().get(i).setQuantidade(resultado);
+            else 
+              controle.getListaProdutoQuantidade().get(i).setQuantidade(0);
+          }
+        }
+      }
+      atualizarTabelasProduto();
+    });
     //----------------------------------------------------------------
   }
 
@@ -1593,7 +1651,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
   }
 
   private void mudarTodosPaineis(float x, float y){
-    //TODO atualizar novos paineis
     if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH){
       mudarTamanhoComponentesPainel(painelInicial, x, y, true);
       mudarTamanhoComponentesPainel(painelCadastroClientes, x, y, true);

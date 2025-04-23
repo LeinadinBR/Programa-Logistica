@@ -109,7 +109,6 @@ public class DataBase {
     listaPedidos.add(p);
   }
 
-  //TODO salvar e carregar todos e verificar qualquer erro
   @SuppressWarnings("unchecked")
   public void load(){
     try {

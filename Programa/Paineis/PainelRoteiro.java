@@ -65,7 +65,7 @@ public class PainelRoteiro extends PainelBase {
     bRetornar.setFocusable(false);
     bRetornar.setBounds(300, 460, 300, 90);
 
-    tfPesquisa = new JTextField("Pesquisa");
+    tfPesquisa = new JTextField();
     tfPesquisa.setFont(font);
     tfPesquisa.setBounds(10, 10, 200, 40);
 

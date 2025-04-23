@@ -3,7 +3,6 @@ package Programa.Paineis;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -245,5 +244,13 @@ public class PainelEstoqueXRoteiro extends PainelBase{
 
   public void setbSubtrairEstoque(JButton bSubtrairEstoque) {
     this.bSubtrairEstoque = bSubtrairEstoque;
+  }
+
+  public ArrayList<ProdutoQuantidade> getListaProdutosNoRoteiro() {
+    return listaProdutosNoRoteiro;
+  }
+
+  public void setListaProdutosNoRoteiro(ArrayList<ProdutoQuantidade> listaProdutosNoRoteiro) {
+    this.listaProdutosNoRoteiro = listaProdutosNoRoteiro;
   }
 }

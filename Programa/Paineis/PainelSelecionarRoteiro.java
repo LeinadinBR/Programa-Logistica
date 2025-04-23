@@ -146,4 +146,13 @@ public class PainelSelecionarRoteiro extends PainelBase {
   public void setCorFiller(Color corFiller) {
     this.corFiller = corFiller;
   }
+
+  public TableRowSorter<DefaultTableModel> getRowSorter() {
+    return rowSorter;
+  }
+
+  public void setRowSorter(TableRowSorter<DefaultTableModel> rowSorter) {
+    this.rowSorter = rowSorter;
+  }
+  
 }

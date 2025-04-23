@@ -11,8 +11,6 @@ public class Endereco implements Serializable{
   private String telefone;
 
 
-  //TODO revisar necissade de contato
-
   //construtor
   public Endereco(String rua, String bairro, String cidade, String cep, int num, String telefone){
     this.rua = rua;
