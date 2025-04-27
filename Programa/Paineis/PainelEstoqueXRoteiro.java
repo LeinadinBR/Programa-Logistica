@@ -108,13 +108,15 @@ public class PainelEstoqueXRoteiro extends PainelBase{
       mudarBounds(bRetornar, width, height, 300, 60);
       mudarBounds(bEscolherRoteiro, width, height, 300, 45);
       mudarBounds(insidePanel, width, height, 880, 450);
+      mudarBounds(bSubtrairEstoque, width, height, 300, 60);
     }
     else {
       scrollPane.setBounds(340, 10, 500, 430);
       tfRoteiro.setBounds(10, 10, 300, 40);
-      bRetornar.setBounds(300, 470, 300, 60);
+      bRetornar.setBounds(125, 470, 300, 60);
       bEscolherRoteiro.setBounds(10, 65, 300, 45);
       insidePanel.setBounds(10, 10, 880, 450);
+      bSubtrairEstoque.setBounds(450, 470, 300, 60);
     }
   }
 
