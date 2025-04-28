@@ -80,6 +80,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
     menuAction();
 
     this.addWindowStateListener(this);    
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
 
   private void init(){
@@ -132,7 +133,6 @@ public class MainFrame extends JFrame implements WindowStateListener{
     arquivoMenu.setMnemonic(KeyEvent.VK_A);
 
     barraMenu.add(arquivoMenu);
-
   }
 
   private void buttonMoveAction(){
