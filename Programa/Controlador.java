@@ -40,7 +40,7 @@ public class Controlador {
     dataBase.verProdutoQuantidade();
   }
 
-  public boolean atualizarDadosDB(int id, int col, Object valor, int painelOrigem){
+  public boolean atualizarDadosDB(String id, int col, Object valor, int painelOrigem){
     //Essa função funciona para mudanças vindas do painel de estoque, visto o número da coluna
     switch (painelOrigem) {
       //EStoque

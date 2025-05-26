@@ -19,7 +19,6 @@ import javax.swing.table.TableRowSorter;
 import Programa.Cliente;
 
 //TODO ver a possibilidade de apagar/editar itens da tabela
-//TODO colocar opção na tabela para expandir detalhes do endereço
 //TODO ao clicar em uma linha da tabela duas vezes, abre uma tela com todos os detalhes
 public class PainelVerClientes extends PainelBase {
   private JPanel insidePanel;

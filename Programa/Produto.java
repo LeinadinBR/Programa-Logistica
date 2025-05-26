@@ -3,7 +3,7 @@ package Programa;
 import java.io.Serializable;
 
 public class Produto implements Serializable {
-  private int codigo; //essencial
+  private String codigo; //essencial
   private String nome; //essencial
   private Fornecedor fornecedor; //essencial
   private double precoTotal; //essencial (preco de compra)
@@ -14,7 +14,7 @@ public class Produto implements Serializable {
   private Data dataDeValidade;
 
 
-  public Produto(int codigo, String nome, Fornecedor fornecedor, double precoTotal, double precoComDesconto, double precoDeVenda, double porcentagemLucro, double lucroIndividualBruto){
+  public Produto(String codigo, String nome, Fornecedor fornecedor, double precoTotal, double precoComDesconto, double precoDeVenda, double porcentagemLucro, double lucroIndividualBruto){
     this.codigo = codigo;
     this.nome = nome;
     this.fornecedor = fornecedor;
@@ -27,11 +27,11 @@ public class Produto implements Serializable {
   public Produto(){}  
 
   //getters e setters
-  public int getCodigo() {
+  public String getCodigo() {
     return codigo;
   }
 
-  public void setCodigo(int codigo) {
+  public void setCodigo(String codigo) {
     this.codigo = codigo;
   }
 

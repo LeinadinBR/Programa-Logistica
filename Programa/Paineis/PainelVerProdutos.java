@@ -20,10 +20,7 @@ import Programa.Produto;
 
 public class PainelVerProdutos extends PainelBase {
 
-  //TODO ver a possibilidade de apagar/editar itens da tabela
-  //TODO colocar opção na tabela para expandir detalhes do endereço
-  //TODO ao clicar em uma linha da tabela duas vezes, abre uma tela com todos os detalhes
-  
+  //TODO ver a possibilidade de apagar/editar itens da tabela  
   private JPanel insidePanel;
   private JButton bRetornar;
   private JTextField tfPesquisa;
@@ -79,7 +76,6 @@ public class PainelVerProdutos extends PainelBase {
     cbComboBox.setBounds(400, 430, 150, 50);
 
     tTabela = new JTable(tableModel){
-      //TODO ver se bloquea a edição da tabela de id
       @Override
       public boolean isCellEditable(int row, int column) {
         return column != 5 && column != 6 && column != 7; 
@@ -127,20 +123,16 @@ public class PainelVerProdutos extends PainelBase {
       o[i][2] = listaProdutos.get(i).getPrecoTotal();
       o[i][3] = listaProdutos.get(i).getPrecoComDesconto();
       o[i][4] = listaProdutos.get(i).getPrecoDeVenda();
-      o[i][5] = (100 - calcularPorcentagemLucro((double)o[i][3], (double)o[i][4]));
-      o[i][6] = ((double)o[i][4] - (double)o[i][3]);
-      //o[i][7] = listaProdutos.get(i).getDataDeValidade().getFullData();
+      o[i][5] = listaProdutos.get(i).getPorcentagemLucro();
+      o[i][6] = listaProdutos.get(i).getLucroIndividualBruto();
+      o[i][7] = listaProdutos.get(i).getDataDeValidade().getFullData();
     }
     
     this.dados = o;
     tableModel.setDataVector(dados, colunas);
     tTabela.setRowSorter(rowSorter);
   }
-
-  private double calcularPorcentagemLucro(double venda, double compra){
-    return (venda*100)/compra;
-  }
-
+  
   //getters e setters
   public JButton getbRetornar() {
     return bRetornar;

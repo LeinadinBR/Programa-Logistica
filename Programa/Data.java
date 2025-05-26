@@ -22,6 +22,8 @@ public class Data implements Serializable{
     }   
   }
 
+  public Data(){}
+
   //getters e setters
   public String getFullData() {
     return fullData;

@@ -61,7 +61,7 @@ public class PainelCadastroProdutos extends PainelBase {
     insidePanel.add(tfPrecoCompra);
     this.getFocusList().add(tfPrecoVenda);
     insidePanel.add(tfPrecoVenda);
-    //insidePanel.add(tfDataDeValidade);
+    insidePanel.add(tfDataDeValidade);
     insidePanel.add(tfFornecedor);
     insidePanel.add(lbl);
     this.getFocusList().add(tTabela);
@@ -131,15 +131,12 @@ public class PainelCadastroProdutos extends PainelBase {
     tfPrecoVenda.setForeground(corFiller);
     fillerText("Preço de Venda", tfPrecoVenda);
 
-    /*
-    Data de validade descontinuada
-
     tfDataDeValidade = new JTextField("Data de Validade");
     tfDataDeValidade.setSelectedTextColor(Color.red);
-    tfDataDeValidade.setBounds(15, 275, 340, 50);
+    tfDataDeValidade.setBounds(15, 335, 340, 50);
     tfDataDeValidade.setFont(new Font("Verdana", Font.PLAIN, 25));
     tfDataDeValidade.setForeground(corFiller);
-    fillerText("Data de Validade", tfDataDeValidade);*/
+    fillerText("Data de Validade", tfDataDeValidade);
 
     tfFornecedor = new JTextField("Fornecedor");
     tfFornecedor.setSelectedTextColor(Color.red);
@@ -195,7 +192,7 @@ public class PainelCadastroProdutos extends PainelBase {
       mudarBounds(tfFornecedor, width, height, 340, 50);
       mudarBounds(lbl, width, height, 290, 30);
       mudarBounds(tTabela, width, height, 385, 340);
-      //mudarBounds(tfDataDeValidade, width, height, 340, 50);
+      mudarBounds(tfDataDeValidade, width, height, 340, 50);
     }
     else {
       insidePanel.setBounds(10, 10, 880, 400);
@@ -209,9 +206,10 @@ public class PainelCadastroProdutos extends PainelBase {
       tfPrecoCompra.setBounds(15, 155, 340, 50);
       tfPrecoVenda.setBounds(15, 215, 340, 50);
       tfFornecedor.setBounds(15, 275, 340, 50);
+      tfDataDeValidade.setBounds(15, 335, 340, 50);
       lbl.setBounds(465, 15, 290, 30);
       tTabela.setBounds(465, 46, 385, 340);    
-      //tfDataDeValidade.setBounds(15, 275, 340, 50);
+      
     }
   }
 

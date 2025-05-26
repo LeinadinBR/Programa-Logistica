@@ -11,8 +11,6 @@ public class Vendas_Estoque {
     this.estoque = estoque;
     this.roteiro = roteiro;
   }
-
-  //TODO fazer os metodos para gerar a tabela de realacao
   
   //getters e setters
   public ProdutoQuantidade getProdutosQueTem() {

@@ -11,6 +11,16 @@ import java.awt.event.WindowEvent;
 import java.util.regex.PatternSyntaxException;
 
 
+//TODO Gerar arquivo para compra de produtos
+//TODO Gerar tabela de pedidos individuais com informações do cliente com campo de assinatura e data
+//TODO bug de produto duplicado no estoque x roteiro
+//TODO adicionar atributo de validade aos produtos
+//TODO mudar o campo de id do produto para string
+//TODO bug no painel de escolher roteiro dentro do pedido
+//TODO alterar pedido depois de lançado
+//TODO apertar com enter para ativar tabelas onde double click acontece
+
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -315,7 +325,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
       boolean flag = false;
       try {
         if (cp.getTfId().getText() != null && !cp.getTfId().getText().equals(""))
-          p.setCodigo(Integer.parseInt(cp.getTfId().getText()));
+          p.setCodigo(cp.getTfId().getText());
         else flag = true;
         if (cp.getTfNome().getText() != null && !cp.getTfNome().getText().equals(""))
           p.setNome(cp.getTfNome().getText());
@@ -326,8 +336,8 @@ public class MainFrame extends JFrame implements WindowStateListener{
         if (cp.getTfPrecoVenda().getText() != null && !cp.getTfPrecoVenda().getText().equals(""))
           p.setPrecoDeVenda(Double.parseDouble(cp.getTfPrecoVenda().getText()));
         else flag = true;
-        /*if (cp.getTfDataDeValidade().getText() != null && !cp.getTfDataDeValidade().getText().equals("Data de Validade"))
-          p.setDataDeValidade(new Data(cp.getTfDataDeValidade().getText()));*/
+        if (cp.getTfDataDeValidade().getText() != null && !cp.getTfDataDeValidade().getText().equals("Data de Validade"))
+          p.setDataDeValidade(new Data(cp.getTfDataDeValidade().getText()));
         if (procurarFornecedor(cp.getTfFornecedor().getText()))
           p.setFornecedor(controle.getFornecedor(cp.getTfFornecedor().getText()));
         else flag = true;
@@ -347,7 +357,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           p.setPrecoComDesconto(Math.floor((p.getPrecoTotal()*(1-(p.getFornecedor().getDesconto())/100))*100)/100);
         else 
           p.setPrecoComDesconto(p.getPrecoTotal());
-        p.setPorcentagemLucro(100 - calcularPorcentagemLucro(p.getPrecoComDesconto(), p.getPrecoDeVenda()));
+        p.setPorcentagemLucro(calcularPorcentagemLucro(p.getPrecoComDesconto(), p.getPrecoDeVenda()) - 100);
         p.setLucroIndividualBruto(p.getPrecoDeVenda()-p.getPrecoComDesconto());
       }
       
@@ -357,16 +367,26 @@ public class MainFrame extends JFrame implements WindowStateListener{
       cp.getTfNome().setText("Nome");
       cp.getTfNome().setForeground(cp.getCorFiller());
       
-      cp.getTfId().setText(String.valueOf(Integer.parseInt(cp.getTfId().getText()) + 1));
-      controle.getListaNumPermanentes().set(0, Integer.parseInt(cp.getTfId().getText()));
+      try {
+        cp.getTfId().setText(String.valueOf(Integer.parseInt(cp.getTfId().getText()) + 1));
+      }
+      catch (NumberFormatException ex){
+        cp.getTfId().setText("");
+      }
+      try {
+        controle.getListaNumPermanentes().set(0, Integer.parseInt(cp.getTfId().getText()));
+      }
+      catch (NumberFormatException ex){
+        controle.getListaNumPermanentes().set(0, (controle.getListaNumPermanentes().get(0) + 1));
+      }
 
       cp.getTfFornecedor().setText("Fornecedor");
       cp.getTfPrecoCompra().setText("Preço de Compra");
       cp.getTfPrecoCompra().setForeground(cp.getCorFiller());
       cp.getTfPrecoVenda().setText("Preço de Venda");
       cp.getTfPrecoVenda().setForeground(cp.getCorFiller());
-      //cp.getTfDataDeValidade().setText("Data de Validade");
-      //cp.getTfDataDeValidade().setForeground(cp.getCorFiller());
+      cp.getTfDataDeValidade().setText("Data de Validade");
+      cp.getTfDataDeValidade().setForeground(cp.getCorFiller());
     });
     
     painelCadastroProdutos.gettTabela().addMouseListener(new MouseListener() {
@@ -494,7 +514,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
               else flag = true;
             }
             catch (NumberFormatException ex){
-              JOptionPane.showMessageDialog(MainFrame.self, "Formato incorretp", "Erro", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(MainFrame.self, "Formato incorreto", "Erro", JOptionPane.ERROR_MESSAGE);
             }
 
             if (flag){}
@@ -600,6 +620,11 @@ public class MainFrame extends JFrame implements WindowStateListener{
     //Cadastrar Fornecedores------------------------------------------
 
     painelCadastroFornecedores.getbEndereco().addActionListener(e -> {
+      //verifica se já está aberto
+      if (painelCadastroFornecedores.isEnderecoPopUp())
+        return;
+      painelCadastroFornecedores.setEnderecoPopUp(true);
+
       PainelCriarEnderecos painelEnderecos = new PainelCriarEnderecos();
       JFrame frameSecundario = new JFrame();
       frameSecundario.setSize(500, 530);
@@ -635,15 +660,19 @@ public class MainFrame extends JFrame implements WindowStateListener{
           else flag = true;
         }
         catch (NumberFormatException ex){
-          JOptionPane.showMessageDialog(this, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(frameSecundario, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+          flag = true;
         }
 
-        if (flag){}
-          //Todo optionpane
+        if (flag){
+          return;
+        }
+
 
         controle.adicionarEndereco(endereco);
         atualizarTabelasEndereco();
         frameSecundario.dispose();
+        painelCadastroFornecedores.setEnderecoPopUp(false);
       });
     });
 
@@ -656,6 +685,11 @@ public class MainFrame extends JFrame implements WindowStateListener{
       @Override
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == (KeyEvent.VK_ENTER)){
+          //se tiver aberto já n funfa
+          if (painelCadastroFornecedores.isEnderecoPopUp())
+            return;
+          painelCadastroFornecedores.setEnderecoPopUp(true);
+          
           PainelCriarEnderecos painelEnderecos = new PainelCriarEnderecos();
           JFrame frameSecundario = new JFrame();
           frameSecundario.setSize(500, 530);
@@ -691,15 +725,19 @@ public class MainFrame extends JFrame implements WindowStateListener{
               else flag = true;
             }
             catch (NumberFormatException ex){
-              JOptionPane.showMessageDialog(MainFrame.self, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(frameSecundario, "Formato Inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+              flag = true;
             }
 
-            if (flag){}
-              //Todo optionpane
+            if (flag){
+              frameSecundario.dispose();
+              return;
+            }
 
             controle.adicionarEndereco(endereco);
             atualizarTabelasEndereco();
             frameSecundario.dispose();
+            painelCadastroFornecedores.setEnderecoPopUp(false);
           });
         }
       }
@@ -781,6 +819,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
         return;
       }
       else {
+        System.out.println("chegou aq");
         controle.adicionarFornecedor(f);
         atualizarTabelasFornecedor();
         cf.getTfNomeFantasia().setText("Nome Fantasia");
@@ -846,7 +885,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
 
           if (lin != -1 && col != -1){
             
-            int id = Integer.parseInt(String.valueOf(painelVerProdutos.gettTabela().getValueAt(lin, 0)));
+            String id = String.valueOf(painelVerProdutos.gettTabela().getValueAt(lin, 0));
             atualizarValorBD(id, obj, col, 1);
           }
           
@@ -977,7 +1016,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
           Object obj = painelEstoque.gettTabela().getModel().getValueAt(lin, col);
 
           if (lin != -1 && col != -1){
-            int id = Integer.parseInt(String.valueOf(painelEstoque.gettTabela().getValueAt(lin, 0)));
+            String id = String.valueOf(painelEstoque.gettTabela().getValueAt(lin, 0));
             atualizarValorBD(id, obj, col, 0);
           }
           
@@ -1720,8 +1759,8 @@ public class MainFrame extends JFrame implements WindowStateListener{
     return null;
   }
 
-  private double calcularPorcentagemLucro(double venda, double compra){
-    return (venda*100)/compra;
+  private double calcularPorcentagemLucro(double compra, double venda){
+    return ((venda*100)/compra);
   }
 
   private void atualizarTabelasProduto(){
@@ -1814,27 +1853,13 @@ public class MainFrame extends JFrame implements WindowStateListener{
   }
 
   private Produto validarProduto(String nome){
-    boolean ehNum = true;
-    int id = -1;
-    //tenta ver se a string é número do id ou nome do produto
-    try{
-      id = Integer.parseInt(nome);
+    for (Produto p: controle.getListaProdutos()){
+      if (p.getCodigo().equals(nome))
+        return p;
     }
-    catch (NumberFormatException ex){
-      ehNum = false;
-    }
-
-    if (ehNum){
-      for (Produto p: controle.getListaProdutos()){
-        if (p.getCodigo() == id)
-          return p;
-      }
-    }
-    else {
-      for (Produto p: controle.getListaProdutos()){
-        if (p.getNome().equals(nome))
-          return p;
-      }
+    for (Produto p: controle.getListaProdutos()){
+      if (p.getNome().equals(nome))
+        return p;
     }
     return null;
   }
@@ -1848,7 +1873,7 @@ public class MainFrame extends JFrame implements WindowStateListener{
     return null;
   }
 
-  private boolean atualizarValorBD(int id, Object valor, int col, int painelOrigem){
+  private boolean atualizarValorBD(String id, Object valor, int col, int painelOrigem){
     //int painelOrigem vai definir qual função chamar no controlador
     boolean flag = controle.atualizarDadosDB(id, col, valor, painelOrigem); 
     if (flag)

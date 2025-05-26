@@ -46,7 +46,6 @@ public class CustomFocusTraversalPolicy extends FocusTraversalPolicy {
       return components.get(0);
     }
     catch(Exception ex){
-      //TODO acho que pode dar um erro aqui, mas retornando null tá tranquilo
       return null;
     }
   }

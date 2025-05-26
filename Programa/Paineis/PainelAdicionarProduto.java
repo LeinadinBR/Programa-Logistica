@@ -33,7 +33,6 @@ public class PainelAdicionarProduto extends PainelBase {
 
   private Color corFiller = new Color(200, 160, 160);
 
-  //TODO adicionar opção pesquisa por nome de produto
   public PainelAdicionarProduto(){
     init();
 

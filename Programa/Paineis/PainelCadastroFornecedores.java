@@ -43,6 +43,8 @@ public class PainelCadastroFornecedores extends PainelBase {
 
   private Color corFiller = new Color(200, 160, 160);
 
+  private boolean isEnderecoPopUp = false;
+
   public PainelCadastroFornecedores(){
     init();
 
@@ -296,5 +298,13 @@ public class PainelCadastroFornecedores extends PainelBase {
 
   public void setCorFiller(Color corFiller) {
     this.corFiller = corFiller;
+  }
+
+  public boolean isEnderecoPopUp() {
+    return isEnderecoPopUp;
+  }
+
+  public void setEnderecoPopUp(boolean isEnderecoPopUp) {
+    this.isEnderecoPopUp = isEnderecoPopUp;
   }
 }
